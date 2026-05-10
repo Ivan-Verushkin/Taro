@@ -162,3 +162,137 @@ cardsSlider.addEventListener("scroll", () => {
 window.addEventListener("resize", () => {
     alignCardToAnchor(activeIndex, false);
 });
+const starsLayer = document.getElementById("starsLayer");
+
+function setRandomStarPosition(star) {
+    star.style.left = Math.random() * 100 + "%";
+    star.style.top = Math.random() * 100 + "%";
+}
+
+function createStar(className, minDuration, maxDuration) {
+    const star = document.createElement("span");
+    star.classList.add("star", className);
+
+    setRandomStarPosition(star);
+
+    const duration = Math.random() * (maxDuration - minDuration) + minDuration;
+
+    star.style.animationDuration = `${duration.toFixed(2)}s`;
+    star.style.animationDelay = `-${(Math.random() * duration).toFixed(2)}s`;
+
+    if (Math.random() < 0.05 && className !== "star--huge") {
+        star.style.background = "rgba(255, 170, 90, 0.95)";
+        star.style.boxShadow = "0 0 6px rgba(255,170,90,0.8), 0 0 14px rgba(255,170,90,0.35)";
+    }
+
+    star.addEventListener("animationiteration", function () {
+        setRandomStarPosition(star);
+    });
+
+    starsLayer.appendChild(star);
+}
+
+for (let i = 0; i < 320; i++) {
+    createStar("star--small", 0.45, 1.4);
+}
+
+for (let i = 0; i < 130; i++) {
+    createStar("star--medium", 0.55, 1.6);
+}
+
+for (let i = 0; i < 70; i++) {
+    createStar("star--large", 0.7, 1.9);
+}
+
+for (let i = 0; i < 16; i++) {
+    createStar("star--huge", 0.9, 2.2);
+}
+const customCursor = document.querySelector(".custom-cursor");
+const customCursorDot = document.querySelector(".custom-cursor__dot");
+
+let mouseX = window.innerWidth / 2;
+let mouseY = window.innerHeight / 2;
+
+let cursorX = mouseX;
+let cursorY = mouseY;
+
+let dotX = 0;
+let dotY = 0;
+
+let targetDotX = 0;
+let targetDotY = 0;
+
+let lastMouseX = mouseX;
+let lastMouseY = mouseY;
+
+function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+}
+
+function lerp(start, end, amount) {
+    return start + (end - start) * amount;
+}
+
+document.addEventListener("mousemove", function (event) {
+    mouseX = event.clientX;
+    mouseY = event.clientY;
+
+    const moveX = mouseX - lastMouseX;
+    const moveY = mouseY - lastMouseY;
+
+    targetDotX = clamp(moveX * 0.22, -5, 5);
+    targetDotY = clamp(moveY * 0.22, -5, 5);
+
+    lastMouseX = mouseX;
+    lastMouseY = mouseY;
+});
+
+function animateCursor() {
+    cursorX = lerp(cursorX, mouseX, 0.42);
+    cursorY = lerp(cursorY, mouseY, 0.42);
+
+    const dx = mouseX - cursorX;
+    const dy = mouseY - cursorY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance > 10) {
+        const scale = 10 / distance;
+
+        cursorX = mouseX - dx * scale;
+        cursorY = mouseY - dy * scale;
+    }
+
+    const dotMaxOffset = 8;
+
+    const directionX = mouseX - cursorX;
+    const directionY = mouseY - cursorY;
+    const directionDistance = Math.sqrt(directionX * directionX + directionY * directionY);
+
+    if (directionDistance > 0.1) {
+        targetDotX = (directionX / directionDistance) * Math.min(directionDistance, dotMaxOffset);
+        targetDotY = (directionY / directionDistance) * Math.min(directionDistance, dotMaxOffset);
+    } else {
+        targetDotX = 0;
+        targetDotY = 0;
+    }
+
+    dotX = lerp(dotX, targetDotX, 0.22);
+    dotY = lerp(dotY, targetDotY, 0.22);
+
+    customCursor.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+    customCursorDot.style.transform = `translate(calc(-50% + ${dotX}px), calc(-50% + ${dotY}px))`;
+
+    requestAnimationFrame(animateCursor);
+}
+
+animateCursor();
+
+document.querySelectorAll("a, button").forEach(function (element) {
+    element.addEventListener("mouseenter", function () {
+        customCursor.classList.add("custom-cursor--hover");
+    });
+
+    element.addEventListener("mouseleave", function () {
+        customCursor.classList.remove("custom-cursor--hover");
+    });
+});
