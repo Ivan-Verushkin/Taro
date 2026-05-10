@@ -357,17 +357,21 @@ function animateCursor() {
     requestAnimationFrame(animateCursor);
 }
 
-animateCursor();
+if (window.innerWidth > 1200) {
+    animateCursor();
+}
 
-document.querySelectorAll("a, button").forEach(function (element) {
-    element.addEventListener("mouseenter", function () {
-        customCursor.classList.add("custom-cursor--hover");
-    });
+if (window.innerWidth > 1200) {
+    document.querySelectorAll("a, button").forEach(function (element) {
+        element.addEventListener("mouseenter", function () {
+            customCursor.classList.add("custom-cursor--hover");
+        });
 
-    element.addEventListener("mouseleave", function () {
-        customCursor.classList.remove("custom-cursor--hover");
+        element.addEventListener("mouseleave", function () {
+            customCursor.classList.remove("custom-cursor--hover");
+        });
     });
-});
+}
 const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
         if (entry.isIntersecting) {
