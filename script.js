@@ -296,3 +296,24 @@ document.querySelectorAll("a, button").forEach(function (element) {
         customCursor.classList.remove("custom-cursor--hover");
     });
 });
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add("show");
+
+            setTimeout(() => {
+                entry.target.classList.add("was-shown");
+            }, 1300);
+        } else {
+            entry.target.classList.remove("show");
+        }
+    });
+}, {
+    threshold: 0.2
+});
+
+const animatedElements = document.querySelectorAll(".hidden, .hidden-bottom");
+
+animatedElements.forEach((el) => {
+    observer.observe(el);
+});
