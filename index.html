@@ -22,7 +22,14 @@
         </div>
     </header>
     <section class="main-section">
-        <img src="Images/gadalka.png" class="gadalka__img" alt="">
+        <picture>
+            <source media="(max-width: 600px)" srcset="Images/gadalka-mobile.webp">
+        
+            <source media="(max-width: 1200px)" srcset="Images/gadalka-tablet.webp">
+        
+            <img class="gadalka__img" src="Images/gadalka-desktop.webp" alt="" width="900" height="1200" fetchpriority="high"
+                decoding="async">
+        </picture>
     
         <div class="stars-layer" id="starsLayer"></div>
         <img src="Images/bottom-slider.png" class="bottom-brush" alt="">
