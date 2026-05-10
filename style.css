@@ -1040,6 +1040,12 @@ h3 {
     }
 }
 
+@media (max-width: 1200px) {
+    .custom-cursor {
+        display: none;
+    }
+}
+
 @media (max-width: 980px) {
     .main-section__content {
         padding: 0 20px;
