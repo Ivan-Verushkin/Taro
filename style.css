@@ -28,6 +28,20 @@ h3 {
     font-family: "Cormorant Garamond", serif;
 }
 
+.timeline-content h3 {
+    display: inline-block;
+    transform-origin: center center;
+
+    transition:
+        transform 0.35s ease,
+        color 0.35s ease;
+}
+
+.timeline-content h3:hover {
+    transform: scale(1.06);
+    color: rgb(235, 143, 6);
+}
+
 .container {
     max-width: 1250px;
     margin-left: auto;
@@ -73,6 +87,15 @@ h3 {
 
 .delay-3:not(.was-shown) {
     transition-delay: 1200ms;
+}
+
+.title {
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 49px;
+    text-align: center;
+
+    color: #DEDEDE;
 }
 
 /* =========================================================
@@ -421,6 +444,66 @@ h3 {
     overflow: hidden;
 }
 
+/* Нижняя большая картинка */
+.services::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 720px;
+
+    background:
+        linear-gradient(to bottom,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0.25) 35%,
+            rgba(0, 0, 0, 0.75) 100%),
+        url("Images/Main.png");
+
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-size: cover;
+
+    opacity: 0.65;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Дополнительное затемнение сверху картинки, чтобы не спорила с текстом */
+.services::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 720px;
+
+    background: linear-gradient(to bottom,
+            rgba(0, 0, 0, 0.75) 0%,
+            rgba(0, 0, 0, 0.25) 45%,
+            rgba(0, 0, 0, 0) 100%);
+
+    z-index: 1;
+    pointer-events: none;
+}
+
+.glow-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.services__container,
+.timeline-section,
+.timeline {
+    position: relative;
+    z-index: 3;
+}
+
 .services__container {
     position: relative;
     width: 80%;
@@ -433,6 +516,54 @@ h3 {
     width: 80%;
 }
 
+.glow-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.glow-spot {
+    position: absolute;
+    width: var(--glow-size);
+    height: var(--glow-size);
+
+    left: var(--glow-left);
+    top: var(--glow-top);
+
+    border-radius: 50%;
+
+    background: radial-gradient(circle,
+            var(--glow-color-1) 0%,
+            var(--glow-color-2) 38%,
+            rgba(0, 0, 0, 0) 72%);
+
+    filter: blur(28px);
+    opacity: var(--glow-opacity);
+
+    transform: translate(-50%, -50%);
+    animation: glowFloat var(--glow-duration) ease-in-out infinite alternate;
+}
+
+@keyframes glowFloat {
+    from {
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+
+    to {
+        transform: translate(calc(-50% + var(--move-x)),
+                calc(-50% + var(--move-y))) scale(1.12);
+    }
+}
+
+.services__container,
+.timeline-section,
+.timeline {
+    position: relative;
+    z-index: 2;
+}
+
 /* =========================================================
    SECTION 2: TIMELINE
    ========================================================= */
@@ -443,41 +574,90 @@ h3 {
     background: transparent;
     color: #fff;
     overflow: visible;
+    padding: 40px 0 350px;
 }
 
 .timeline {
     position: relative;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1050px;
     margin: 0 auto;
     z-index: 2;
 }
 
+
 .timeline::before {
     content: "";
     position: absolute;
-    top: 0;
+    top: 90px;
     bottom: 0;
     left: 50%;
     width: 2px;
+
     background: linear-gradient(to bottom,
             rgba(155, 82, 255, 0),
             rgba(155, 82, 255, 1),
             rgba(155, 82, 255, 0));
+
     transform: translateX(-50%);
     box-shadow:
         0 0 12px rgba(155, 82, 255, 0.8),
         0 0 28px rgba(155, 82, 255, 0.35);
 }
 
+.timeline .title {
+    margin: 0 0 55px;
+    text-align: center;
+}
+
+/* Анимация появления */
+
+.timeline .title,
+.timeline-item {
+    opacity: 0;
+    filter: blur(5px);
+    transform: translateY(45px) scale(0.96);
+
+    transition:
+        opacity 0.8s ease,
+        filter 0.8s ease,
+        transform 0.8s ease;
+}
+
+.timeline .title.timeline-show,
+.timeline-item.timeline-show {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+}
+
+.timeline-item:nth-of-type(1) {
+    transition-delay: 100ms;
+}
+
+.timeline-item:nth-of-type(2) {
+    transition-delay: 200ms;
+}
+
+.timeline-item:nth-of-type(3) {
+    transition-delay: 300ms;
+}
+
+.timeline-item:nth-of-type(4) {
+    transition-delay: 400ms;
+}
+
+/* Карточки таймлайна */
+
 .timeline-item {
     position: relative;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 90px;
+    gap: 40px;
     align-items: center;
-    min-height: 360px;
-    margin-bottom: 80px;
+
+    min-height: 165px;
+    margin-bottom: 18px;
 }
 
 .timeline-item:last-child {
@@ -489,12 +669,14 @@ h3 {
     position: absolute;
     left: 50%;
     top: 50%;
-    width: 13px;
-    height: 13px;
+
+    width: 11px;
+    height: 11px;
     border-radius: 50%;
+
     background: #a96cff;
     transform: translate(-50%, -50%);
-    z-index: 2;
+    z-index: 3;
 
     box-shadow:
         0 0 12px rgba(169, 108, 255, 1),
@@ -506,67 +688,81 @@ h3 {
 }
 
 .timeline-image img {
-    width: 220px;
-    height: 220px;
+    width: 235px;
+    height: 235px;
     object-fit: cover;
-    border-radius: 16px;
+    border-radius: 14px;
     display: block;
 
     box-shadow:
-        0 30px 70px rgba(0, 0, 0, 0.55),
-        0 0 35px rgba(155, 82, 255, 0.12);
+        0 18px 38px rgba(0, 0, 0, 0.55),
+        0 0 25px rgba(155, 82, 255, 0.12);
 }
 
 .timeline-content {
-    max-width: 440px;
+    max-width: 380px;
 }
 
 .timeline-label {
-    margin-bottom: 10px;
+    margin: 0 0 5px;
     color: #a96cff;
-    font-size: 14px;
+    font-size: 12px;
+    line-height: 1.25;
     font-weight: 800;
     text-transform: uppercase;
 }
 
 .timeline-content h3 {
-    margin: 0 0 18px;
-    font-size: 48px;
-    line-height: 1;
+    display: inline-block;
+    margin: 0 0 8px;
+
+    font-size: 36px;
+    line-height: 0.95;
     color: #fff;
+
+    transform-origin: center center;
+
+    transition:
+        transform 0.35s ease,
+        color 0.35s ease;
+}
+
+.timeline-content h3:hover {
+    transform: scale(1.06);
+    color: rgb(235, 143, 6);
 }
 
 .timeline-content p {
     margin: 0;
     color: #b7b7b7;
-    font-size: 17px;
-    line-height: 1.45;
+    font-size: 15px;
+    line-height: 1.35;
 }
 
-/* Timeline: odd items - image left, text right */
-.timeline-item:nth-child(odd) .timeline-image {
+/* Чередование лево / право */
+
+.timeline-item:nth-of-type(odd) .timeline-image {
     justify-content: flex-end;
-    padding-right: 45px;
+    padding-right: 24px;
 }
 
-.timeline-item:nth-child(odd) .timeline-content {
-    padding-left: 45px;
+.timeline-item:nth-of-type(odd) .timeline-content {
+    padding-left: 24px;
 }
 
-/* Timeline: even items - text left, image right */
-.timeline-item:nth-child(even) .timeline-image {
+.timeline-item:nth-of-type(even) .timeline-image {
     grid-column: 2;
     grid-row: 1;
     justify-content: flex-start;
-    padding-left: 45px;
+    padding-left: 24px;
 }
 
-.timeline-item:nth-child(even) .timeline-content {
+.timeline-item:nth-of-type(even) .timeline-content {
     grid-column: 1;
     grid-row: 1;
     justify-self: flex-end;
     text-align: right;
-    padding-right: 45px;
+    padding-right: 24px;
 }
 
 /* =========================================================

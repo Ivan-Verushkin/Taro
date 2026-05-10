@@ -317,3 +317,86 @@ const animatedElements = document.querySelectorAll(".hidden, .hidden-bottom");
 animatedElements.forEach((el) => {
     observer.observe(el);
 });
+
+const timelineObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add("timeline-show");
+        } else {
+            entry.target.classList.remove("timeline-show");
+        }
+    });
+}, {
+    threshold: 0.2
+});
+
+const timelineElements = document.querySelectorAll(".timeline .title, .timeline-item");
+
+timelineElements.forEach((el) => {
+    timelineObserver.observe(el);
+});
+const glowLayer = document.getElementById("glowLayer");
+
+if (glowLayer) {
+    const glows = [
+        {
+            left: "18%",
+            top: "20%",
+            size: "520px",
+            opacity: "0.35",
+            color1: "rgba(169, 108, 255, 0.55)",
+            color2: "rgba(169, 108, 255, 0.18)"
+        },
+        {
+            left: "82%",
+            top: "25%",
+            size: "460px",
+            opacity: "0.28",
+            color1: "rgba(235, 143, 6, 0.48)",
+            color2: "rgba(235, 143, 6, 0.14)"
+        },
+        {
+            left: "22%",
+            top: "58%",
+            size: "560px",
+            opacity: "0.28",
+            color1: "rgba(120, 70, 255, 0.5)",
+            color2: "rgba(120, 70, 255, 0.16)"
+        },
+        {
+            left: "78%",
+            top: "68%",
+            size: "520px",
+            opacity: "0.25",
+            color1: "rgba(255, 170, 80, 0.42)",
+            color2: "rgba(255, 170, 80, 0.12)"
+        },
+        {
+            left: "50%",
+            top: "45%",
+            size: "700px",
+            opacity: "0.16",
+            color1: "rgba(169, 108, 255, 0.45)",
+            color2: "rgba(169, 108, 255, 0.1)"
+        }
+    ];
+
+    glows.forEach((item) => {
+        const glow = document.createElement("span");
+
+        glow.classList.add("glow-spot");
+
+        glow.style.setProperty("--glow-left", item.left);
+        glow.style.setProperty("--glow-top", item.top);
+        glow.style.setProperty("--glow-size", item.size);
+        glow.style.setProperty("--glow-opacity", item.opacity);
+        glow.style.setProperty("--glow-color-1", item.color1);
+        glow.style.setProperty("--glow-color-2", item.color2);
+
+        glow.style.setProperty("--move-x", `${Math.random() * 70 - 35}px`);
+        glow.style.setProperty("--move-y", `${Math.random() * 70 - 35}px`);
+        glow.style.setProperty("--glow-duration", `${Math.random() * 6 + 8}s`);
+
+        glowLayer.appendChild(glow);
+    });
+}
