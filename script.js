@@ -3,12 +3,69 @@ const cardsTrack = document.getElementById("cardsTrack");
 const sliderDotsContainer = document.getElementById("sliderDots");
 const cardSlides = document.querySelectorAll(".card-slide");
 
+let isDraggingCards = false;
+let dragStartX = 0;
+let dragStartScrollLeft = 0;
+let hasDraggedCards = false;
+
+cardsSlider.addEventListener("pointerdown", function (event) {
+    isDraggingCards = true;
+    hasDraggedCards = false;
+
+    dragStartX = event.clientX;
+    dragStartScrollLeft = cardsSlider.scrollLeft;
+
+    cardsSlider.classList.add("is-dragging");
+    cardsSlider.setPointerCapture(event.pointerId);
+});
+
+cardsSlider.addEventListener("pointermove", function (event) {
+    if (!isDraggingCards) {
+        return;
+    }
+
+    const moveX = event.clientX - dragStartX;
+
+    if (Math.abs(moveX) > 5) {
+        hasDraggedCards = true;
+    }
+
+    cardsSlider.scrollLeft = dragStartScrollLeft - moveX;
+});
+
+cardsSlider.addEventListener("pointerup", function (event) {
+    if (!isDraggingCards) {
+        return;
+    }
+
+    isDraggingCards = false;
+    cardsSlider.classList.remove("is-dragging");
+
+    try {
+        cardsSlider.releasePointerCapture(event.pointerId);
+    } catch (e) { }
+
+    const index = getClosestCardIndex();
+
+    activeIndex = index;
+    setActiveDot(index);
+    applyPerspectiveFrom(index);
+    alignCardToAnchor(index, true);
+});
+
+cardsSlider.addEventListener("pointercancel", function () {
+    isDraggingCards = false;
+    cardsSlider.classList.remove("is-dragging");
+});
+
 let sliderDots = [];
 let scrollTimer = null;
 let isProgrammaticScroll = false;
 let activeIndex = 0;
 
-const anchorOffset = 190;
+function getAnchorOffset() {
+    return window.innerWidth <= 700 ? 24 : 190;
+}
 
 const perspectiveSizes = [
     { width: 230, height: 320, opacity: 1.00, skew: 10, fontSize: 42 },
@@ -63,6 +120,17 @@ function applyPerspectiveFrom(index) {
         const depth = slideIndex - index;
 
         if (depth < 0) {
+            if (window.innerWidth <= 700) {
+                slide.style.display = "block";
+                slide.style.visibility = "hidden";
+                slide.style.flexBasis = "0px";
+                slide.style.width = "0px";
+                slide.style.height = "0px";
+                slide.style.opacity = "0";
+                slide.style.pointerEvents = "none";
+                return;
+            }
+            slide.style.display = "block";
             slide.style.flexBasis = "82px";
             slide.style.height = "145px";
             slide.style.opacity = "0.18";
@@ -74,6 +142,10 @@ function applyPerspectiveFrom(index) {
 
             return;
         }
+
+        slide.style.display = "block";
+        slide.style.visibility = "visible";
+        slide.style.pointerEvents = "auto";
 
         const size = perspectiveSizes[Math.min(depth, perspectiveSizes.length - 1)];
 
@@ -99,14 +171,14 @@ function alignCardToAnchor(index, smooth = true) {
     const paddingLeft = parseFloat(trackStyles.paddingLeft) || 0;
     const gap = parseFloat(trackStyles.columnGap || trackStyles.gap) || 0;
 
-    const collapsedWidth = 82;
+    const collapsedWidth = window.innerWidth <= 700 ? 0 : 82;
 
     const finalTargetOffset =
         paddingLeft +
         index * collapsedWidth +
         index * gap;
 
-    let nextScrollLeft = finalTargetOffset - anchorOffset;
+    let nextScrollLeft = finalTargetOffset - getAnchorOffset();
 
     nextScrollLeft = Math.max(0, Math.min(nextScrollLeft, maxScrollLeft));
 
@@ -123,7 +195,7 @@ function alignCardToAnchor(index, smooth = true) {
 }
 function getClosestCardIndex() {
     const sliderRect = cardsSlider.getBoundingClientRect();
-    const anchorX = sliderRect.left + anchorOffset;
+    const anchorX = sliderRect.left + getAnchorOffset();
 
     let closestIndex = 0;
     let closestDistance = Infinity;
@@ -142,7 +214,7 @@ function getClosestCardIndex() {
 }
 
 cardsSlider.addEventListener("scroll", () => {
-    if (isProgrammaticScroll) {
+    if (isProgrammaticScroll || isDraggingCards) {
         return;
     }
 
@@ -400,3 +472,36 @@ if (glowLayer) {
         glowLayer.appendChild(glow);
     });
 }
+
+const header = document.querySelector(".header");
+const burger = header.querySelector(".burger-menu");
+const burgerIcon = header.querySelector(".burger-menu__icon");
+const nav = header.querySelector(".header__nav");
+
+function hideMobileNav() {
+    if (window.innerWidth <= 600) {
+        nav.style.display = "none";
+        header.classList.remove("header--mobile");
+        burgerIcon.src = "Images/burger.svg";
+    } else {
+        nav.style.display = "flex";
+        header.classList.remove("header--mobile");
+        burgerIcon.src = "Images/burger.svg";
+    }
+}
+
+hideMobileNav();
+
+window.addEventListener("resize", hideMobileNav);
+
+burger.addEventListener("click", function () {
+    header.classList.toggle("header--mobile");
+
+    if (header.classList.contains("header--mobile")) {
+        nav.style.display = "flex";
+        burgerIcon.src = "Images/burger-exit.svg";
+    } else {
+        nav.style.display = "none";
+        burgerIcon.src = "Images/burger.svg";
+    }
+});
