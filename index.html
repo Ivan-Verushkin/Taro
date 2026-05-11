@@ -13,7 +13,7 @@
             <img src="Images/vrata_logo.jpg" class="logo__img"/>
             <nav class="header__nav">
                 <a href="#!" class="header__link">Головна</a>
-                <a href="#work-major" class="header__link">Колоди</a>
+                <a href="#desks" class="header__link">Колоди</a>
                 <a href="#contact-1" class="header__link">Зв'язатися</a>
             </nav>
             <button class="burger-menu" type="button">
@@ -36,19 +36,28 @@
         <div class="main-section__content">
             <p class="hidden-bottom delay-1">Передбачь майбутнє</p>
             <h1 class="hidden delay-2">Зазирни в карти — знайди свій шлях</h1>
-            <a class="discover-more__link hidden delay-3" href="#">Дізнатися більше</a>
+            <a class="discover-more__link hidden delay-3" href="#road">Дізнатися більше</a>
         </div>
     </section>
 
-    <section class="services">
+    <section class="services" id="road">
         <div class="glow-layer" id="glowLayer"></div>
         <div class="container services__container">
             <section class="timeline-section">
                 <div class="timeline">
-                    <h2 class="title">Ваш шлях до ідеальної колоди</h2>
+                    <h2 class="title" >Ваш шлях до ідеальної колоди</h2>
                     <div class="timeline-item">
                         <div class="timeline-image">
-                            <img src="Images/400.png" alt="">
+                            <a href="https://t.me/vratafortuny" class="timeline-image__link" target="_blank" aria-label="Перейти до каталогу">
+                                <img src="Images/400.png" alt="Каталог колод Таро">
+                        
+                                <span class="timeline-image__icon">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3Z" />
+                                        <path d="M5 5h6v2H7v10h10v-4h2v6H5V5Z" />
+                                    </svg>
+                                </span>
+                            </a>
                         </div>
                     
                         <div class="timeline-content">
@@ -98,71 +107,90 @@
             </section>
         </div>
     </section>
-    <section class="hero-card-section">
+    <section class="hero-card-section" id="desks">
+        <h2 class="title hidden-bottom">Популярні Колоди</h2>
+        <section class="hero-card">
+            <div class="hero-card__content">
+            
+                <div class="cards-viewport" id="cardsSlider">
+                    <div class="cards-track" id="cardsTrack">
+                        <div class="card-slide">
+                            <div class="card-placeholder">1</div>
+                        </div>
+                    
+                        <div class="card-slide">
+                            <div class="card-placeholder">2</div>
+                        </div>
+                    
+                        <div class="card-slide">
+                            <div class="card-placeholder">3</div>
+                        </div>
+                    
+                        <div class="card-slide">
+                            <div class="card-placeholder">4</div>
+                        </div>
+                    
+                        <div class="card-slide">
+                            <div class="card-placeholder">5</div>
+                        </div>
+                    
+                        <div class="card-slide">
+                            <div class="card-placeholder">6</div>
+                        </div>
+                    
+                        <div class="card-slide">
+                            <div class="card-placeholder">7</div>
+                        </div>
 
-    <section class="hero-card">
-        <div class="hero-card__content">
-    
-            <div class="cards-viewport" id="cardsSlider">
-                <div class="cards-track" id="cardsTrack">
-                    <div class="card-slide">
-                        <div class="card-placeholder">1</div>
-                    </div>
-            
-                    <div class="card-slide">
-                        <div class="card-placeholder">2</div>
-                    </div>
-            
-                    <div class="card-slide">
-                        <div class="card-placeholder">3</div>
-                    </div>
-            
-                    <div class="card-slide">
-                        <div class="card-placeholder">4</div>
-                    </div>
-            
-                    <div class="card-slide">
-                        <div class="card-placeholder">5</div>
-                    </div>
-            
-                    <div class="card-slide">
-                        <div class="card-placeholder">6</div>
-                    </div>
-            
-                    <div class="card-slide">
-                        <div class="card-placeholder">7</div>
-                    </div>
+                        <div class="card-slide">
+                            <div class="card-placeholder">3</div>
+                        </div>
 
-                    <div class="card-slide">
-                        <div class="card-placeholder">3</div>
-                    </div>
-                    
-                    <div class="card-slide">
-                        <div class="card-placeholder">4</div>
-                    </div>
-                    
-                    <div class="card-slide">
-                        <div class="card-placeholder">5</div>
-                    </div>
-                    
-                    <div class="card-slide">
-                        <div class="card-placeholder">6</div>
-                    </div>
-                    
-                    <div class="card-slide">
-                        <div class="card-placeholder">7</div>
+                        <div class="card-slide">
+                            <div class="card-placeholder">4</div>
+                        </div>
+
+                        <div class="card-slide">
+                            <div class="card-placeholder">5</div>
+                        </div>
+
+                        <div class="card-slide">
+                            <div class="card-placeholder">6</div>
+                        </div>
+
+                        <div class="card-slide">
+                            <div class="card-placeholder">7</div>
+                        </div>
                     </div>
                 </div>
-            </div>
+
+                <div class="slider-dots" id="sliderDots"></div>
             
-            <div class="slider-dots" id="sliderDots"></div>
-    
-        </div>
-    </section>
+            </div>
+        </section>
     </section>
     <div class="custom-cursor">
         <span class="custom-cursor__dot"></span>
     </div>
+    <footer class="footer">
+        <div class="container">
+            <p class="footer__copy">Made by <span>Ivan Vierushkin</span> — Copyright 2026</p>
+            <div class="footer__socials">
+                <a href="https://www.instagram.com/vrata_fortuny/" class="footer__social-link" target="_blank"
+                    aria-label="Instagram">
+                    <img src="https://cdn.simpleicons.org/instagram/dedede" alt="Instagram">
+                </a>
+            
+                <a href="https://www.youtube.com/@vratafortuny" class="footer__social-link" target="_blank" aria-label="YouTube">
+                    <img src="https://cdn.simpleicons.org/youtube/dedede" alt="YouTube">
+                </a>
+            
+                <a href="https://t.me/vratafortuny" class="footer__social-link" target="_blank" aria-label="Telegram">
+                    <img src="https://cdn.simpleicons.org/telegram/dedede" alt="Telegram">
+                </a>
+            </div>
+        </div>
+    </footer>
     <script src="script.js"></script>
 </body>
 </html>
