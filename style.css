@@ -863,7 +863,7 @@ h3 {
 
     margin: auto;
     width: 60%;
-    min-height: 520px;
+    min-height: 640px;
     background: #050505;
     border-radius: 48px;
 }
@@ -931,7 +931,7 @@ h3 {
     z-index: 2;
     margin-bottom: 80px;
 
-    height: 520px;
+    height: 580px;
 
     display: flex;
     flex-direction: column;
@@ -948,14 +948,15 @@ h3 {
     overflow-x: auto;
     overflow-y: hidden;
 
-    padding-top: 80px;
-    padding-bottom: 60px;
+    padding-top: 100px;
+    padding-bottom: 70px;
 
     scrollbar-width: none;
 
-    perspective: 750px;
-    perspective-origin: 15% 50%;
-        touch-action: pan-x;
+    perspective: 1100px;
+    perspective-origin: 45% 50%;
+
+    touch-action: pan-x;
 }
 
 .cards-viewport.is-dragging {
@@ -973,7 +974,7 @@ h3 {
 .cards-track {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 28px;
 
     width: max-content;
 
@@ -983,15 +984,17 @@ h3 {
 
 .card-slide {
     flex: 0 0 120px;
-    height: 175px;
+    height: 200px;
 
     opacity: 0.45;
-    transform-origin: center center;
+    transform-origin: left center;
+    transform-style: preserve-3d;
 
     transition:
         flex-basis 0.45s ease,
         height 0.45s ease,
-        opacity 0.45s ease;
+        opacity 0.45s ease,
+        transform 0.45s ease;
 }
 
 .card-placeholder {
@@ -1032,15 +1035,19 @@ h3 {
 }
 
 .card-image {
-    width: 100%;
+    width: 93%;
     height: 100%;
 
     object-fit: cover;
-    border-radius: 14px;
+    object-position: center;
 
+    border-radius: 16px;
     display: block;
 
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.55);
+
+    backface-visibility: hidden;
+    transform: translateZ(0);
 }
 
 /* =========================================================

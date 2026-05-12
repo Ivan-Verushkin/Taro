@@ -68,14 +68,14 @@ function getAnchorOffset() {
 }
 
 const perspectiveSizes = [
-    { width: 230, height: 320, opacity: 1.00, skew: 10, fontSize: 42 },
-    { width: 196, height: 286, opacity: 0.90, skew: 12, fontSize: 35 },
-    { width: 168, height: 255, opacity: 0.80, skew: 14, fontSize: 30 },
-    { width: 144, height: 226, opacity: 0.70, skew: 16, fontSize: 26 },
-    { width: 124, height: 200, opacity: 0.60, skew: 18, fontSize: 22 },
-    { width: 108, height: 178, opacity: 0.50, skew: 20, fontSize: 19 },
-    { width: 94, height: 160, opacity: 0.42, skew: 22, fontSize: 17 },
-    { width: 82, height: 145, opacity: 0.35, skew: 24, fontSize: 15 }
+    { width: 230, height: 355, opacity: 1.00, rotate: 0, z: 0 },
+    { width: 205, height: 330, opacity: 0.92, rotate: -8, z: -20 },
+    { width: 180, height: 300, opacity: 0.82, rotate: -13, z: -45 },
+    { width: 158, height: 270, opacity: 0.72, rotate: -17, z: -70 },
+    { width: 138, height: 240, opacity: 0.62, rotate: -20, z: -95 },
+    { width: 120, height: 215, opacity: 0.52, rotate: -23, z: -120 },
+    { width: 104, height: 190, opacity: 0.42, rotate: -26, z: -145 },
+    { width: 92, height: 170, opacity: 0.35, rotate: -28, z: -165 }
 ];
 
 createDots();
@@ -116,7 +116,6 @@ function selectCard(index, smooth = true) {
 }
 function applyPerspectiveFrom(index) {
     cardSlides.forEach((slide, slideIndex) => {
-        const placeholder = slide.querySelector(".card-placeholder");
         const depth = slideIndex - index;
 
         if (depth < 0) {
@@ -128,17 +127,17 @@ function applyPerspectiveFrom(index) {
                 slide.style.height = "0px";
                 slide.style.opacity = "0";
                 slide.style.pointerEvents = "none";
+                slide.style.transform = "none";
                 return;
             }
-            slide.style.display = "block";
-            slide.style.flexBasis = "82px";
-            slide.style.height = "145px";
-            slide.style.opacity = "0.18";
 
-            if (placeholder) {
-                placeholder.style.setProperty("--card-skew", "24px");
-                placeholder.style.fontSize = "15px";
-            }
+            slide.style.display = "block";
+            slide.style.visibility = "visible";
+            slide.style.flexBasis = "90px";
+            slide.style.height = "155px";
+            slide.style.opacity = "0.18";
+            slide.style.pointerEvents = "auto";
+            slide.style.transform = "rotateY(18deg) translateZ(-170px)";
 
             return;
         }
@@ -153,12 +152,10 @@ function applyPerspectiveFrom(index) {
         slide.style.height = `${size.height}px`;
         slide.style.opacity = size.opacity;
 
-        if (placeholder) {
-            placeholder.style.setProperty("--card-skew", `${size.skew}px`);
-            placeholder.style.fontSize = `${size.fontSize}px`;
-        }
+        slide.style.transform = `rotateY(${size.rotate}deg) translateZ(${size.z}px)`;
     });
 }
+
 function setActiveDot(index) {
     sliderDots.forEach((dot, dotIndex) => {
         dot.classList.toggle("slider-dot--active", dotIndex === index);
@@ -171,8 +168,7 @@ function alignCardToAnchor(index, smooth = true) {
     const paddingLeft = parseFloat(trackStyles.paddingLeft) || 0;
     const gap = parseFloat(trackStyles.columnGap || trackStyles.gap) || 0;
 
-    const collapsedWidth = window.innerWidth <= 700 ? 0 : 82;
-
+    const collapsedWidth = window.innerWidth <= 700 ? 0 : 90;
     const finalTargetOffset =
         paddingLeft +
         index * collapsedWidth +
