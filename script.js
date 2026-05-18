@@ -5,15 +5,23 @@ const cardSlides = document.querySelectorAll(".card-slide");
 
 let isDraggingCards = false;
 let dragStartX = 0;
-let dragStartScrollLeft = 0;
-let hasDraggedCards = false;
+let dragStartY = 0;
+let dragCurrentX = 0;
+let dragLocked = false;
+let dragDirection = null;
+
+const SWIPE_THRESHOLD = 45;
 
 cardsSlider.addEventListener("pointerdown", function (event) {
     isDraggingCards = true;
-    hasDraggedCards = false;
+    dragLocked = false;
+    dragDirection = null;
 
     dragStartX = event.clientX;
-    dragStartScrollLeft = cardsSlider.scrollLeft;
+    dragStartY = event.clientY;
+    dragCurrentX = event.clientX;
+
+    clearTimeout(scrollTimer);
 
     cardsSlider.classList.add("is-dragging");
     cardsSlider.setPointerCapture(event.pointerId);
@@ -24,13 +32,25 @@ cardsSlider.addEventListener("pointermove", function (event) {
         return;
     }
 
-    const moveX = event.clientX - dragStartX;
+    const diffX = event.clientX - dragStartX;
+    const diffY = event.clientY - dragStartY;
 
-    if (Math.abs(moveX) > 5) {
-        hasDraggedCards = true;
+    if (!dragLocked) {
+        if (Math.abs(diffX) < 8 && Math.abs(diffY) < 8) {
+            return;
+        }
+
+        dragDirection = Math.abs(diffX) > Math.abs(diffY) ? "horizontal" : "vertical";
+        dragLocked = true;
     }
 
-    cardsSlider.scrollLeft = dragStartScrollLeft - moveX;
+    if (dragDirection !== "horizontal") {
+        return;
+    }
+
+    event.preventDefault();
+
+    dragCurrentX = event.clientX;
 });
 
 cardsSlider.addEventListener("pointerup", function (event) {
@@ -45,17 +65,28 @@ cardsSlider.addEventListener("pointerup", function (event) {
         cardsSlider.releasePointerCapture(event.pointerId);
     } catch (e) { }
 
-    const index = getClosestCardIndex();
+    if (dragDirection !== "horizontal") {
+        return;
+    }
 
-    activeIndex = index;
-    setActiveDot(index);
-    applyPerspectiveFrom(index);
-    alignCardToAnchor(index, true);
+    const diffX = dragCurrentX - dragStartX;
+
+    if (Math.abs(diffX) < SWIPE_THRESHOLD) {
+        selectCard(activeIndex, true);
+        return;
+    }
+
+    const nextIndex = diffX < 0
+        ? Math.min(activeIndex + 1, cardSlides.length - 1)
+        : Math.max(activeIndex - 1, 0);
+
+    selectCard(nextIndex, true);
 });
 
 cardsSlider.addEventListener("pointercancel", function () {
     isDraggingCards = false;
     cardsSlider.classList.remove("is-dragging");
+    selectCard(activeIndex, true);
 });
 
 let sliderDots = [];

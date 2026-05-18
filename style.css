@@ -956,7 +956,9 @@ h3 {
     perspective: 1100px;
     perspective-origin: 45% 50%;
 
-    touch-action: pan-x;
+    touch-action: pan-y;
+        overscroll-behavior-x: contain;
+        scroll-behavior: smooth;
 }
 
 .cards-viewport.is-dragging {
