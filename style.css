@@ -941,7 +941,6 @@ h3 {
 /* =========================================================
    SECTION 3: CARDS SLIDER
    ========================================================= */
-
 .cards-viewport {
     position: relative;
 
@@ -957,8 +956,7 @@ h3 {
     perspective-origin: 45% 50%;
 
     touch-action: pan-y;
-        overscroll-behavior-x: contain;
-        scroll-behavior: smooth;
+    overscroll-behavior-x: contain;
 }
 
 .cards-viewport.is-dragging {
@@ -1050,6 +1048,9 @@ h3 {
 
     backface-visibility: hidden;
     transform: translateZ(0);
+
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 /* =========================================================

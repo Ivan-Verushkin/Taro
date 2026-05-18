@@ -4,56 +4,74 @@ const sliderDotsContainer = document.getElementById("sliderDots");
 const cardSlides = document.querySelectorAll(".card-slide");
 
 let isDraggingCards = false;
-let dragStartX = 0;
-let dragStartY = 0;
-let dragCurrentX = 0;
-let dragLocked = false;
-let dragDirection = null;
 
-const SWIPE_THRESHOLD = 45;
+let touchStartX = 0;
+let touchStartY = 0;
+let touchCurrentX = 0;
+let touchCurrentY = 0;
 
-cardsSlider.addEventListener("pointerdown", function (event) {
+let touchLocked = false;
+let touchDirection = null;
+
+const SWIPE_THRESHOLD = 35;
+const DRAG_PREVIEW_LIMIT = 26;
+
+cardsSlider.addEventListener("touchstart", function (event) {
+    if (!event.touches || event.touches.length !== 1) {
+        return;
+    }
+
     isDraggingCards = true;
-    dragLocked = false;
-    dragDirection = null;
+    touchLocked = false;
+    touchDirection = null;
 
-    dragStartX = event.clientX;
-    dragStartY = event.clientY;
-    dragCurrentX = event.clientX;
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
+    touchCurrentX = touchStartX;
+    touchCurrentY = touchStartY;
 
     clearTimeout(scrollTimer);
 
     cardsSlider.classList.add("is-dragging");
-    cardsSlider.setPointerCapture(event.pointerId);
-});
 
-cardsSlider.addEventListener("pointermove", function (event) {
-    if (!isDraggingCards) {
+    cardsTrack.style.transition = "none";
+}, { passive: true });
+
+cardsSlider.addEventListener("touchmove", function (event) {
+    if (!isDraggingCards || !event.touches || event.touches.length !== 1) {
         return;
     }
 
-    const diffX = event.clientX - dragStartX;
-    const diffY = event.clientY - dragStartY;
+    touchCurrentX = event.touches[0].clientX;
+    touchCurrentY = event.touches[0].clientY;
 
-    if (!dragLocked) {
+    const diffX = touchCurrentX - touchStartX;
+    const diffY = touchCurrentY - touchStartY;
+
+    if (!touchLocked) {
         if (Math.abs(diffX) < 8 && Math.abs(diffY) < 8) {
             return;
         }
 
-        dragDirection = Math.abs(diffX) > Math.abs(diffY) ? "horizontal" : "vertical";
-        dragLocked = true;
+        touchDirection = Math.abs(diffX) > Math.abs(diffY) ? "horizontal" : "vertical";
+        touchLocked = true;
     }
 
-    if (dragDirection !== "horizontal") {
+    if (touchDirection !== "horizontal") {
         return;
     }
 
     event.preventDefault();
 
-    dragCurrentX = event.clientX;
-});
+    const previewOffset = Math.max(
+        -DRAG_PREVIEW_LIMIT,
+        Math.min(DRAG_PREVIEW_LIMIT, diffX * 0.22)
+    );
 
-cardsSlider.addEventListener("pointerup", function (event) {
+    cardsTrack.style.transform = `translateX(${previewOffset}px)`;
+}, { passive: false });
+
+cardsSlider.addEventListener("touchend", function () {
     if (!isDraggingCards) {
         return;
     }
@@ -61,15 +79,19 @@ cardsSlider.addEventListener("pointerup", function (event) {
     isDraggingCards = false;
     cardsSlider.classList.remove("is-dragging");
 
-    try {
-        cardsSlider.releasePointerCapture(event.pointerId);
-    } catch (e) { }
+    cardsTrack.style.transition = "transform 0.25s ease";
+    cardsTrack.style.transform = "translateX(0)";
 
-    if (dragDirection !== "horizontal") {
+    setTimeout(() => {
+        cardsTrack.style.transition = "";
+        cardsTrack.style.transform = "";
+    }, 260);
+
+    if (touchDirection !== "horizontal") {
         return;
     }
 
-    const diffX = dragCurrentX - dragStartX;
+    const diffX = touchCurrentX - touchStartX;
 
     if (Math.abs(diffX) < SWIPE_THRESHOLD) {
         selectCard(activeIndex, true);
@@ -81,12 +103,90 @@ cardsSlider.addEventListener("pointerup", function (event) {
         : Math.max(activeIndex - 1, 0);
 
     selectCard(nextIndex, true);
-});
+}, { passive: true });
 
-cardsSlider.addEventListener("pointercancel", function () {
+cardsSlider.addEventListener("touchcancel", function () {
     isDraggingCards = false;
     cardsSlider.classList.remove("is-dragging");
-    selectCard(activeIndex, true);
+
+    cardsTrack.style.transition = "transform 0.25s ease";
+    cardsTrack.style.transform = "translateX(0)";
+
+    setTimeout(() => {
+        cardsTrack.style.transition = "";
+        cardsTrack.style.transform = "";
+    }, 260);
+}, { passive: true });
+
+let mouseDraggingCards = false;
+let mouseStartX = 0;
+let mouseCurrentX = 0;
+
+const MOUSE_SWIPE_THRESHOLD = 45;
+const MOUSE_DRAG_PREVIEW_LIMIT = 32;
+
+cardsSlider.addEventListener("mousedown", function (event) {
+    if (window.innerWidth <= 700) {
+        return;
+    }
+
+    mouseDraggingCards = true;
+    mouseStartX = event.clientX;
+    mouseCurrentX = event.clientX;
+
+    clearTimeout(scrollTimer);
+
+    cardsSlider.classList.add("is-dragging");
+    cardsTrack.style.transition = "none";
+
+    event.preventDefault();
+});
+
+window.addEventListener("mousemove", function (event) {
+    if (!mouseDraggingCards) {
+        return;
+    }
+
+    mouseCurrentX = event.clientX;
+
+    const diffX = mouseCurrentX - mouseStartX;
+
+    const previewOffset = Math.max(
+        -MOUSE_DRAG_PREVIEW_LIMIT,
+        Math.min(MOUSE_DRAG_PREVIEW_LIMIT, diffX * 0.18)
+    );
+
+    cardsTrack.style.transform = `translateX(${previewOffset}px)`;
+});
+
+window.addEventListener("mouseup", function () {
+    if (!mouseDraggingCards) {
+        return;
+    }
+
+    mouseDraggingCards = false;
+    cardsSlider.classList.remove("is-dragging");
+
+    cardsTrack.style.transition = "transform 0.25s ease";
+    cardsTrack.style.transform = "translateX(0)";
+
+    setTimeout(() => {
+        cardsTrack.style.transition = "";
+        cardsTrack.style.transform = "";
+    }, 260);
+
+    const diffX = mouseCurrentX - mouseStartX;
+
+    if (Math.abs(diffX) < MOUSE_SWIPE_THRESHOLD) {
+        selectCard(activeIndex, true);
+        return;
+    }
+
+    const nextIndex = diffX < 0
+        ? Math.min(activeIndex + 1, cardSlides.length - 1)
+        : Math.max(activeIndex - 1, 0);
+
+    selectCard(nextIndex, true);
 });
 
 let sliderDots = [];
