@@ -941,22 +941,18 @@ h3 {
 /* =========================================================
    SECTION 3: CARDS SLIDER
    ========================================================= */
+
 .cards-viewport {
     position: relative;
-
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: hidden;
-
     padding-top: 100px;
     padding-bottom: 70px;
-
     scrollbar-width: none;
-
     perspective: 1100px;
     perspective-origin: 45% 50%;
-
-    touch-action: pan-y;
-    overscroll-behavior-x: contain;
+    touch-action: none;
+    overscroll-behavior: contain;
 }
 
 .cards-viewport.is-dragging {
@@ -1051,6 +1047,7 @@ h3 {
 
     user-select: none;
     -webkit-user-drag: none;
+    pointer-events: none;
 }
 
 /* =========================================================
